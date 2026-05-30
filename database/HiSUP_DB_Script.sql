@@ -116,8 +116,9 @@ INSERT INTO Programs (ProgramCode, ProgramName, DepartmentID, DurationYears) VAL
 GO
 INSERT INTO Students (CNIC, Name, Email, Phone, BankAccount, DepartmentID, ProgramID, EnrollmentDate, Status)
 VALUES 
-('12345-6789012-3', 'John Doe', 'john@university.edu', '03001234567', 'PK76ABCD1234', 1, 1, '2024-09-01', 'Active'),
-('12345-6789012-4', 'Jane Smith', 'jane@university.edu', '03001234568', 'PK76ABCD1235', 1, 2, '2024-09-01', 'Active');
+('35201-1234567-8', 'Ahmed Raza', 'ahmed.raza@student.hitecuni.edu.pk', '03001234567', 'PK76HBL0123456', 1, 1, '2024-09-01', 'Active'),
+('35201-2345678-9', 'Fatima Akhtar', 'fatima.akhtar@student.hitecuni.edu.pk', '03002345678', 'PK76UBL1234567', 1, 2, '2024-09-01', 'Active'),
+('35201-3456789-0', 'Hamza Khan', 'hamza.khan@student.hitecuni.edu.pk', '03003456789', 'PK76MCB2345678', 2, 3, '2024-09-01', 'Active');
 GO
 INSERT INTO Faculty (CNIC, Name, Email, HireDate, DepartmentID, Designation) VALUES
 ('11111-1111111-1', 'Dr. Ahmed Khan', 'ahmed@university.edu', '2020-08-15', 1, 'Professor'),
@@ -135,4 +136,64 @@ SELECT COUNT(*) AS FacultyCount FROM Faculty;
 SELECT COUNT(*) AS CoursesCount FROM Courses;
 SELECT COUNT(*) AS SectionsCount FROM Sections;
 SELECT COUNT(*) AS EnrollmentsCount FROM Enrollments;
+GO
+USE HiSUP_DB;
+GO
+
+USE HiSUP_DB;
+GO
+
+CREATE OR ALTER PROCEDURE RegisterStudent
+    @Name VARCHAR(100),
+    @CNIC VARCHAR(15),
+    @Email VARCHAR(100),
+    @Phone VARCHAR(20),
+    @DepartmentID INT,
+    @ProgramID INT,
+    @StudentID INT = NULL OUTPUT
+AS
+BEGIN
+    BEGIN TRY
+        -- Check if email exists
+        IF EXISTS (SELECT 1 FROM Students WHERE Email = @Email)
+        BEGIN
+            RAISERROR('Email already exists', 16, 1);
+            RETURN;
+        END
+        
+        -- Check if CNIC exists
+        IF EXISTS (SELECT 1 FROM Students WHERE CNIC = @CNIC)
+        BEGIN
+            RAISERROR('CNIC already registered', 16, 1);
+            RETURN;
+        END
+        
+        -- Insert student
+        INSERT INTO Students (Name, CNIC, Email, Phone, DepartmentID, ProgramID, EnrollmentDate, Status)
+        VALUES (@Name, @CNIC, @Email, @Phone, @DepartmentID, @ProgramID, GETDATE(), 'Active');
+        
+        SET @StudentID = SCOPE_IDENTITY();
+        
+        SELECT 'Student registered successfully' AS Message;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrorMessage, 16, 1);
+    END CATCH
+END
+GO
+
+DECLARE @NewID INT;
+EXEC RegisterStudent 
+    @Name = 'Test Student',
+    @CNIC = '99999-9999999-9',
+    @Email = 'teststudent@university.edu',
+    @Phone = '03009999999',
+    @DepartmentID = 1,
+    @ProgramID = 1,
+    @StudentID = @NewID OUTPUT;
+PRINT 'New Student ID: ' + CAST(@NewID AS VARCHAR);
+GO
+
+SELECT * FROM Students WHERE Email = 'teststudent@university.edu';
 GO
