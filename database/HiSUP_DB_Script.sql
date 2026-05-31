@@ -33,6 +33,7 @@ CREATE TABLE Students (
     Email VARCHAR(100) NOT NULL UNIQUE,
     Phone VARCHAR(20),
     BankAccount VARCHAR(30),
+    Gender VARCHAR(10) CHECK (Gender IN ('Male', 'Female', 'Other')),
     DepartmentID INT NOT NULL,
     ProgramID INT NOT NULL,
     EnrollmentDate DATE NOT NULL,
