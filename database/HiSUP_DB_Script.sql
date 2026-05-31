@@ -109,6 +109,16 @@ CREATE TABLE FeePayments (
     FOREIGN KEY (FeeID) REFERENCES FeeStructure(FeeID)
 );
 GO
+CREATE TABLE Grades (
+    GradeID INT IDENTITY(1,1) PRIMARY KEY,
+    EnrollmentID INT NOT NULL,
+    Grade FLOAT NOT NULL CHECK (Grade >= 0 AND Grade <= 100),
+    GradeLetter CHAR(2),
+    Remarks VARCHAR(200),
+    FOREIGN KEY (EnrollmentID) REFERENCES Enrollments(EnrollmentID),
+    CONSTRAINT UQ_Enrollment_Grade UNIQUE (EnrollmentID)
+);
+GO
 INSERT INTO Programs (ProgramCode, ProgramName, DepartmentID, DurationYears) VALUES
 ('BSCS', 'Bachelor of Science in Computer Science', 1, 4),
 ('BSAI', 'Bachelor of Science in Artificial Intelligence', 1, 4),
@@ -128,6 +138,11 @@ INSERT INTO Courses (CourseCode, CourseName, CreditHours, DepartmentID) VALUES
 ('CS101', 'Programming Fundamentals', 3, 1),
 ('CS102', 'Database Systems', 3, 1),
 ('CS103', 'Data Structures', 3, 1);
+GO
+INSERT INTO Grades (EnrollmentID, Grade, GradeLetter)
+SELECT e.EnrollmentID, 85.0, 'A'
+FROM Enrollments e
+WHERE e.StudentID = 1002;
 GO
 SELECT COUNT(*) AS DepartmentsCount FROM Departments;
 SELECT COUNT(*) AS ProgramsCount FROM Programs;
