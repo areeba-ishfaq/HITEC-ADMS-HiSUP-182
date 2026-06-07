@@ -145,6 +145,38 @@ CREATE TABLE LibraryIssues (
     FOREIGN KEY (BookID) REFERENCES LibraryItems(BookID)
 );
 GO
+CREATE TABLE AttendanceRecords (
+    AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
+    StudentID INT NOT NULL,
+    SectionID INT NOT NULL,
+    AttendanceDate DATE NOT NULL,
+    Status VARCHAR(20) CHECK (Status IN ('Present', 'Absent', 'Late', 'Excused')),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (SectionID) REFERENCES Sections(SectionID),
+    CONSTRAINT UQ_Student_Attendance UNIQUE (StudentID, SectionID, AttendanceDate)
+);
+GO
+CREATE TABLE ExamSchedule (
+    ExamID INT IDENTITY(1,1) PRIMARY KEY,
+    SectionID INT NOT NULL,
+    ExamDate DATE NOT NULL,
+    StartTime TIME NOT NULL,
+    EndTime TIME NOT NULL,
+    ExamType VARCHAR(20) CHECK (ExamType IN ('Midterm', 'Final', 'Quiz', 'Assignment')),
+    RoomNo VARCHAR(20),
+    FOREIGN KEY (SectionID) REFERENCES Sections(SectionID)
+);
+GO
+CREATE TABLE AuditLog (
+    LogID INT IDENTITY(1,1) PRIMARY KEY,
+    TableName VARCHAR(50),
+    Action VARCHAR(10),
+    OldValue VARCHAR(MAX),
+    NewValue VARCHAR(MAX),
+    UserName VARCHAR(100),
+    TimeStamp DATETIME DEFAULT GETDATE()
+);
+GO
 INSERT INTO Programs (ProgramCode, ProgramName, DepartmentID, DurationYears) VALUES
 ('BSCS', 'Bachelor of Science in Computer Science', 1, 4),
 ('BSAI', 'Bachelor of Science in Artificial Intelligence', 1, 4),
@@ -175,6 +207,11 @@ VALUES
 ('Database Systems', 'C.J. Date', '978-0321197849', 'Textbook', 1, 3),
 ('Programming in C#', 'Jeffrey Richter', '978-0735667457', 'Programming', 1, 2),
 ('Introduction to Algorithms', 'Thomas Cormen', '978-0262033848', 'Textbook', 1, 1);
+GO
+INSERT INTO ExamSchedule (SectionID, ExamDate, StartTime, EndTime, ExamType, RoomNo)
+VALUES 
+(1, '2026-06-15', '09:00', '11:00', 'Midterm', 'Room A-101'),
+(1, '2026-07-10', '10:00', '13:00', 'Final', 'Room A-101');
 GO
 SELECT COUNT(*) AS DepartmentsCount FROM Departments;
 SELECT COUNT(*) AS ProgramsCount FROM Programs;
