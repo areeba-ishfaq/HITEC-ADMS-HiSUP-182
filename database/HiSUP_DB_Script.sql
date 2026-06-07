@@ -1,4 +1,4 @@
-CREATE DATABASE HiSUP_DB;
+﻿CREATE DATABASE HiSUP_DB;
 GO
 USE HiSUP_DB;
 GO
@@ -38,6 +38,8 @@ CREATE TABLE Students (
     ProgramID INT NOT NULL,
     EnrollmentDate DATE NOT NULL,
     Status VARCHAR(20) DEFAULT 'Active',
+    CGPA DECIMAL(5,2) DEFAULT 0,              -- ← ADD THIS
+    OutstandingBalance DECIMAL(12,2) DEFAULT 0, -- ← ADD THIS
     FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
     FOREIGN KEY (ProgramID) REFERENCES Programs(ProgramID)
 );
@@ -120,6 +122,29 @@ CREATE TABLE Grades (
     CONSTRAINT UQ_Enrollment_Grade UNIQUE (EnrollmentID)
 );
 GO
+CREATE TABLE LibraryItems (
+    BookID INT IDENTITY(1,1) PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    Author VARCHAR(100) NOT NULL,
+    ISBN VARCHAR(50) UNIQUE,
+    Category VARCHAR(50),
+    IsAvailable BIT DEFAULT 1,
+    AvailableCopies INT DEFAULT 1
+);
+GO
+CREATE TABLE LibraryIssues (
+    IssueID INT IDENTITY(1,1) PRIMARY KEY,
+    StudentID INT NOT NULL,
+    BookID INT NOT NULL,
+    IssueDate DATE NOT NULL,
+    DueDate DATE NOT NULL,
+    ReturnDate DATE NULL,
+    Status VARCHAR(20) DEFAULT 'Issued',
+    FineAmount DECIMAL(10,2) DEFAULT 0,
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (BookID) REFERENCES LibraryItems(BookID)
+);
+GO
 INSERT INTO Programs (ProgramCode, ProgramName, DepartmentID, DurationYears) VALUES
 ('BSCS', 'Bachelor of Science in Computer Science', 1, 4),
 ('BSAI', 'Bachelor of Science in Artificial Intelligence', 1, 4),
@@ -144,6 +169,12 @@ INSERT INTO Grades (EnrollmentID, Grade, GradeLetter)
 SELECT e.EnrollmentID, 85.0, 'A'
 FROM Enrollments e
 WHERE e.StudentID = 1002;
+GO
+INSERT INTO LibraryItems (Title, Author, ISBN, Category, IsAvailable, AvailableCopies)
+VALUES 
+('Database Systems', 'C.J. Date', '978-0321197849', 'Textbook', 1, 3),
+('Programming in C#', 'Jeffrey Richter', '978-0735667457', 'Programming', 1, 2),
+('Introduction to Algorithms', 'Thomas Cormen', '978-0262033848', 'Textbook', 1, 1);
 GO
 SELECT COUNT(*) AS DepartmentsCount FROM Departments;
 SELECT COUNT(*) AS ProgramsCount FROM Programs;
