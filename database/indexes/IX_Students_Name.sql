@@ -1,0 +1,3 @@
+CREATE NONCLUSTERED INDEX IX_Students_Name
+ON Students (Name);
+GO
