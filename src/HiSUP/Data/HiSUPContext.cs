@@ -1,22 +1,19 @@
+using HiSUP.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
 
-namespace HiSUP.Data;
-
-public class HiSUPContext : DbContext
+namespace HiSUP.Data
 {
-    public HiSUPContext(DbContextOptions<HiSUPContext> options)
-        : base(options)
+    public class HiSUPContext : DbContext
     {
-    }
-    
-    public DbSet<Department> Departments { get; set; }
-}
+        public HiSUPContext(DbContextOptions<HiSUPContext> options)
+            : base(options)
+        {
+        }
 
-public class Department
-{
-    public int DepartmentID { get; set; }
-    public string DeptName { get; set; }
-    public string DeptCode { get; set; }
-    public int? EstablishedYear { get; set; }
-    public DateTime? CreatedAt { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Models.Section> Sections { get; set; }
+    }
 }

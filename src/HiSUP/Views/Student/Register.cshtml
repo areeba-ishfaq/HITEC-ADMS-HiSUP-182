@@ -1,0 +1,34 @@
+﻿@using HiSUP.Models
+@model List<Course>
+
+@{
+    ViewData["Title"] = "Course Registration";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3>Course Registration</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-action="Register">
+                <input type="hidden" name="studentId" value="1002" />
+
+                <div class="mb-3">
+                    <label class="form-label">Select Course:</label>
+                    <select name="courseId" class="form-select">
+                        @foreach (var course in Model)
+                        {
+                            <option value="@course.CourseID">
+                                @course.CourseCode - @course.CourseName (@course.CreditHours credits)
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enroll</button>
+                <a asp-action="Dashboard" asp-route-id="1002" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
