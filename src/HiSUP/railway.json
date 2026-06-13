@@ -1,0 +1,11 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "dotnet restore && dotnet publish -c Release -o /app"
+  },
+  "deploy": {
+    "startCommand": "dotnet /app/HiSUP.dll",
+    "healthcheckPath": "/",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
