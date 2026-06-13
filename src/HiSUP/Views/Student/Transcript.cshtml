@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Transcript";
+    int studentId = ViewBag.StudentId;
+    string studentName = ViewBag.StudentName;
+    var grades = Model as IEnumerable<dynamic>;
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3>Student Transcript</h3>
+        </div>
+        <div class="card-body">
+            <h5>Student: @studentName</h5>
+            <h5>Student ID: @studentId</h5>
+            <hr />
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Credit Hours</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var grade in grades)
+                    {
+                        <tr>
+                            <td>@grade.CourseCode</td>
+                            <td>@grade.CourseName</td>
+                            <td>@grade.CreditHours</td>
+                            <td>
+                                @if (grade.GradeValue > 0)
+                                {
+                                    <span class="badge bg-primary">@grade.GradeValue</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Not graded</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a asp-action="Dashboard" asp-route-id="@studentId" class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>

@@ -17,14 +17,13 @@ namespace HiSUP.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Phone]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }  // ← Allow null
 
-        public string Gender { get; set; }
+        public string? Gender { get; set; }  // ← Allow null
 
         public DateTime EnrollmentDate { get; set; }
 
-        public string Status { get; set; }
+        public string? Status { get; set; }  // ← Allow null
 
         public decimal? CGPA { get; set; }
 

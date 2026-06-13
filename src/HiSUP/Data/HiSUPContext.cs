@@ -15,5 +15,9 @@ namespace HiSUP.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Models.Section> Sections { get; set; }
+        public DbSet<FeePayment> FeePayments { get; set; }
+        public DbSet<Grade> Grades { get; set; }
+        public DbSet<Faculty> Faculty { get; set; }
+        public DbSet<LibraryItem> LibraryItems { get; set; }
     }
 }

@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@ViewBag.TotalStudents</h1>
+                    <p>Total Students</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@ViewBag.TotalFaculty</h1>
+                    <p>Total Faculty</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@ViewBag.TotalCourses</h1>
+                    <p>Total Courses</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@ViewBag.TotalEnrollments</h1>
+                    <p>Total Enrollments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/Admin/Students" class="btn btn-primary m-2">Manage Students</a>
+                    <a href="/Admin/Courses" class="btn btn-success m-2">Manage Courses</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

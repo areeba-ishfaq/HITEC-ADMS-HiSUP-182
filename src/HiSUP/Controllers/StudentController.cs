@@ -87,5 +87,85 @@ namespace HiSUP.Controllers
 
             return RedirectToAction("Dashboard", new { id = studentId });
         }
+
+        // GET: Student/FeePayment
+        public async Task<IActionResult> FeePayment(int id)
+        {
+            ViewBag.StudentId = id;
+
+            // Get outstanding fee using your function
+            using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+            {
+                await connection.OpenAsync();
+                using (var command = new SqlCommand("SELECT dbo.fn_GetOutstandingFee(@StudentID)", connection))
+                {
+                    command.Parameters.AddWithValue("@StudentID", id);
+                    var outstanding = await command.ExecuteScalarAsync();
+                    ViewBag.OutstandingFee = outstanding ?? 0;
+                }
+            }
+
+            return View();
+        }
+
+        // POST: Student/FeePayment
+        [HttpPost]
+        public async Task<IActionResult> FeePayment(int studentId, decimal amount, string paymentMethod)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand("ProcessFeePayment", connection))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@StudentID", studentId);
+                        command.Parameters.AddWithValue("@AmountPaid", amount);
+                        command.Parameters.AddWithValue("@PaymentMethod", paymentMethod);
+
+                        var paymentIdParam = new SqlParameter("@PaymentID", System.Data.SqlDbType.Int);
+                        paymentIdParam.Direction = System.Data.ParameterDirection.Output;
+                        command.Parameters.Add(paymentIdParam);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+
+                TempData["Success"] = "Payment processed successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Payment failed: " + ex.Message;
+            }
+
+            return RedirectToAction("Dashboard", new { id = studentId });
+        }
+
+        // GET: Student/Transcript
+        public async Task<IActionResult> Transcript(int id)
+        {
+            ViewBag.StudentId = id;
+
+            // Get student info
+            var student = await _context.Students.FindAsync(id);
+            ViewBag.StudentName = student?.Name;
+
+            // Get grades
+            var grades = await (from e in _context.Enrollments
+                                join sec in _context.Sections on e.SectionID equals sec.SectionID
+                                join c in _context.Courses on sec.CourseID equals c.CourseID
+                                where e.StudentID == id
+                                select new
+                                {
+                                    c.CourseCode,
+                                    c.CourseName,
+                                    c.CreditHours,
+                                    GradeValue = 0.0m  // Default value
+                                }).ToListAsync();
+
+            return View(grades);
+        }
+
     }
 }

@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Fee Payment";
+    int studentId = ViewBag.StudentId;
+    decimal outstanding = ViewBag.OutstandingFee ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3>Fee Payment</h3>
+                </div>
+                <div class="card-body">
+                    @if (outstanding > 0)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Outstanding Fee: Rs. @outstanding.ToString("N2")</strong>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" name="studentId" value="@studentId" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Amount to Pay:</label>
+                                <input type="number" name="amount" class="form-control"
+                                       max="@outstanding" step="1000" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Payment Method:</label>
+                                <select name="paymentMethod" class="form-select" required>
+                                    <option value="">Select...</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">Pay Now</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success">
+                            <strong>No outstanding fee! Your fee is fully paid.</strong>
+                        </div>
+                    }
+
+                    <a asp-action="Dashboard" asp-route-id="@studentId" class="btn btn-secondary w-100 mt-3">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

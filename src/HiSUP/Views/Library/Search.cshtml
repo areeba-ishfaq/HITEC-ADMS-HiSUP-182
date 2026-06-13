@@ -1,0 +1,63 @@
+﻿@using HiSUP.Models
+@model List<LibraryItem>
+
+@{
+    ViewData["Title"] = "Library Search";
+    string searchTerm = ViewBag.SearchTerm;
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3>Library Search</h3>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="input-group mb-3">
+                    <input type="text" name="searchTerm" class="form-control"
+                           placeholder="Search by title or author..."
+                           value="@searchTerm" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+
+            @if (Model.Any())
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Model)
+                        {
+                            <tr>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.Category</td>
+                                <td>
+                                    @if (book.IsAvailable)
+                                    {
+                                        <span class="badge bg-success">Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Borrowed</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (!string.IsNullOrEmpty(searchTerm))
+            {
+                <div class="alert alert-warning">No books found matching "@searchTerm"</div>
+            }
+        </div>
+    </div>
+</div>
